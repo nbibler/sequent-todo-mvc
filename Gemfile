@@ -1,11 +1,12 @@
-source "https://rubygems.org"
-ruby "2.5.1"
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+ruby '2.5.3'
 
 gem 'rake'
-# let's use the latest and greatest
-gem 'sequent', git: 'https://github.com/zilverline/sequent'
+gem 'sequent', '~> 3.1'
 
 group :test do
-  gem 'rspec'
   gem 'database_cleaner'
+  gem 'rspec'
 end
