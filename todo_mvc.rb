@@ -4,6 +4,7 @@ require 'sequent'
 require 'sequent/support'
 require 'erb'
 require_relative 'lib/post'
+require_relative 'lib/todo'
 require_relative 'app/projectors/post_projector'
 
 require_relative 'config/initializers/sequent'
