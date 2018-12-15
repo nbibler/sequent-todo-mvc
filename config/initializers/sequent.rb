@@ -11,6 +11,7 @@ Sequent.configure do |config|
   ]
 
   config.event_handlers = [
-    PostProjector.new
+    PostProjector.new,
+    TodoProjector.new
   ]
 end

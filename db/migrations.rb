@@ -1,6 +1,6 @@
 require 'sequent/migrations/projectors'
 
-VIEW_SCHEMA_VERSION = 1
+VIEW_SCHEMA_VERSION = 2
 
 class Migrations < Sequent::Migrations::Projectors
   def self.version
@@ -11,6 +11,9 @@ class Migrations < Sequent::Migrations::Projectors
     {
       '1' => [
         PostProjector
+      ],
+      '2' => [
+        TodoProjector
       ]
     }
   end
