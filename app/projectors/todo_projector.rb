@@ -14,7 +14,7 @@ class TodoProjector < Sequent::Projector
     update_all_records(
       TodoRecord,
       { aggregate_id: event.aggregate_id },
-      { completed_at: event.attributes[:completion_time] }
+      { completed: true }
     )
   end
 

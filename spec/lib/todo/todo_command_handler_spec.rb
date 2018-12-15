@@ -12,16 +12,10 @@ RSpec.describe TodoCommandHandler do
   context AddTodo do
     it 'creates a todo' do
       when_command(
-        AddTodo.new(
-          aggregate_id: aggregate_id,
-          title: 'My first Todo'
-        )
+        AddTodo.new(aggregate_id: aggregate_id, title: 'My first Todo')
       )
       then_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        ),
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
         TodoTitleChanged.new(
           aggregate_id: aggregate_id,
           sequence_number: 2,
@@ -34,10 +28,7 @@ RSpec.describe TodoCommandHandler do
   context ChangeTodoTitle do
     it 'changes the title' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        ),
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
         TodoTitleChanged.new(
           aggregate_id: aggregate_id,
           sequence_number: 2,
@@ -61,10 +52,7 @@ RSpec.describe TodoCommandHandler do
 
     it 'ignores if unchanged' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        ),
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
         TodoTitleChanged.new(
           aggregate_id: aggregate_id,
           sequence_number: 2,
@@ -72,101 +60,52 @@ RSpec.describe TodoCommandHandler do
         )
       )
       when_command(
-        ChangeTodoTitle.new(
-          aggregate_id: aggregate_id,
-          title: 'My first Todo'
-        )
+        ChangeTodoTitle.new(aggregate_id: aggregate_id, title: 'My first Todo')
       )
       then_events()
     end
 
     it 'fails when changing a removed todo' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        ),
-        TodoRemoved.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 2
-        )
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
+        TodoRemoved.new(aggregate_id: aggregate_id, sequence_number: 2)
       )
       expect {
         when_command(
-          ChangeTodoTitle.new(
-            aggregate_id: aggregate_id,
-            title: 'Boom'
-          )
+          ChangeTodoTitle.new(aggregate_id: aggregate_id, title: 'Boom')
         )
       }.to raise_error(Todo::TodoAlreadyRemoved)
     end
   end
 
   context CompleteTodo do
-    let(:completion_time) { DateTime.new(2018, 12, 14, 20, 28, 0, '-05:00') }
-
     it 'completes a todo' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        )
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1)
       )
-      when_command(
-        CompleteTodo.new(
-          aggregate_id: aggregate_id,
-          completion_time: completion_time
-        )
-      )
+      when_command(CompleteTodo.new(aggregate_id: aggregate_id))
       then_events(
-        TodoCompleted.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 2,
-          completion_time: completion_time
-        )
+        TodoCompleted.new(aggregate_id: aggregate_id, sequence_number: 2)
       )
     end
 
     it 'fails when completing a completed todo' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        ),
-        TodoCompleted.new(
-          aggregate_id: aggregate_id,
-          completion_time: completion_time,
-          sequence_number: 2
-        )
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
+        TodoCompleted.new(aggregate_id: aggregate_id, sequence_number: 2)
       )
       expect {
-        when_command(
-          CompleteTodo.new(
-            aggregate_id: aggregate_id,
-            completion_time: completion_time
-          )
-        )
+        when_command(CompleteTodo.new(aggregate_id: aggregate_id))
       }.to raise_error(Todo::TodoAlreadyCompleted)
     end
 
     it 'fails when completing a removed todo' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        ),
-        TodoRemoved.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 2
-        )
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
+        TodoRemoved.new(aggregate_id: aggregate_id, sequence_number: 2)
       )
       expect {
-        when_command(
-          CompleteTodo.new(
-            aggregate_id: aggregate_id,
-            completion_time: completion_time
-          )
-        )
+        when_command(CompleteTodo.new(aggregate_id: aggregate_id))
       }.to raise_error(Todo::TodoAlreadyRemoved)
     end
   end
@@ -174,10 +113,7 @@ RSpec.describe TodoCommandHandler do
   context RemoveTodo do
     it 'removes a todo' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        )
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1)
       )
       when_command(RemoveTodo.new(aggregate_id: aggregate_id))
       then_events(
@@ -187,14 +123,8 @@ RSpec.describe TodoCommandHandler do
 
     it 'ignores when already removed' do
       given_events(
-        TodoAdded.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 1
-        ),
-        TodoRemoved.new(
-          aggregate_id: aggregate_id,
-          sequence_number: 2
-        )
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
+        TodoRemoved.new(aggregate_id: aggregate_id, sequence_number: 2)
       )
       when_command(RemoveTodo.new(aggregate_id: aggregate_id))
       then_events()

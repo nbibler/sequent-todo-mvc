@@ -4,7 +4,6 @@ class TodoAdded < Sequent::Event
 end
 
 class TodoCompleted < Sequent::Event
-  attrs completion_time: DateTime
 end
 
 class TodoRemoved < Sequent::Event

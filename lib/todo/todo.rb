@@ -17,10 +17,10 @@ class Todo < Sequent::AggregateRoot
     apply TodoTitleChanged, title: title
   end
 
-  def complete(time)
-    fail TodoAlreadyCompleted if @completion_time
+  def complete
+    fail TodoAlreadyCompleted if @completed
     fail TodoAlreadyRemoved if @removed
-    apply TodoCompleted, completion_time: time
+    apply TodoCompleted
   end
 
   def remove
@@ -32,7 +32,7 @@ class Todo < Sequent::AggregateRoot
   end
 
   on TodoCompleted do |event|
-    @completion_time = event.completion_time
+    @completed = true
   end
 
   on TodoRemoved do |event|

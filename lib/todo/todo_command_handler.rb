@@ -7,7 +7,7 @@ class TodoCommandHandler < Sequent::CommandHandler
 
   on CompleteTodo do |command|
     do_with_aggregate(command, Todo) do |todo|
-      todo.complete(command.completion_time)
+      todo.complete
     end
   end
 

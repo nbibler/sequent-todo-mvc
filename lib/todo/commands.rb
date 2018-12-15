@@ -11,8 +11,6 @@ class ChangeTodoTitle < Sequent::Command
 end
 
 class CompleteTodo < Sequent::Command
-  attrs completion_time: DateTime
-  validates_presence_of :completion_time
 end
 
 class RemoveTodo < Sequent::Command

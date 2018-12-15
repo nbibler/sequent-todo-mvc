@@ -2,7 +2,7 @@ CREATE TABLE todo_records%SUFFIX% (
     id serial NOT NULL,
     aggregate_id uuid NOT NULL,
     title character varying,
-    completed_at timestamp,
+    completed boolean DEFAULT false NOT NULL,
     CONSTRAINT todo_records_pkey%SUFFIX% PRIMARY KEY (id)
 );
 
