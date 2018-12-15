@@ -1,0 +1,51 @@
+<% if @todos.any? %>
+  <section class="main">
+    <input id="toggle-all" class="toggle-all" type="checkbox">
+    <label for="toggle-all">Mark all as complete</label>
+    <ul class="todo-list">
+      <% @todos.each do |todo| %>
+        <% if todo == @todo %>
+          <li class="editing">
+            <div class="view">
+              <form method="POST" action="/todos/<%= todo.aggregate_id %>/<%= todo.completed? ? 'incomplete' : 'complete' %>"><input type="hidden" name="_method" value="put"><button class="toggle" type="submit"></button></form>
+              <label data-edit-path="/todos/<%= todo.aggregate_id %>/edit"><%= todo.title %></label>
+              <form method="POST" action="/todos/<%= todo.aggregate_id %>"><input type="hidden" name="_method" value="delete"><button class="destroy" type="submit"></button></form>
+            </div>
+            <form method="POST" action="/todos/<%= todo.aggregate_id %>"><input type="hidden" name="_method" value="patch"><input class="edit" autofocus name="title" type="text" value="<%= todo.title %>"></form>
+          </li>
+        <% else %>
+          <li class="<%= todo.completed? ? 'completed' : 'incomplete' %>">
+            <div class="view">
+              <form method="POST" action="/todos/<%= todo.aggregate_id %>/<%= todo.completed? ? 'incomplete' : 'complete' %>"><input type="hidden" name="_method" value="put"><button class="toggle" type="submit"></button></form>
+              <label data-edit-path="/todos/<%= todo.aggregate_id %>/edit"><%= todo.title %></label>
+              <form method="POST" action="/todos/<%= todo.aggregate_id %>"><input type="hidden" name="_method" value="delete"><button class="destroy" type="submit"></button></form>
+            </div>
+          </li>
+        <% end %>
+      <% end %>
+    </ul>
+  </section>
+<% end %>
+
+<footer class="footer">
+  <span class="todo-count"><strong><%= @incomplete_todos.size %></strong> item left</span>
+
+  <ul class="filters">
+    <li>
+      <a class="<%= 'selected' if request.path_info== '/' %>" href="/">All</a>
+    </li>
+    <li>
+      <a class="<%= 'selected' if request.path_info== '/active' %>" href="/active">Active</a>
+    </li>
+    <li>
+      <a class="<%= 'selected' if request.path_info== '/completed' %>" href="/completed">Completed</a>
+    </li>
+  </ul>
+
+  <% if @complete_todos.any? %>
+    <form method="POST" action="/todos">
+      <input type="hidden" name="_method" value="delete">
+      <button class="clear-completed">Clear completed</button>
+    </form>
+  <% end %>
+</footer>

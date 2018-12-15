@@ -5,6 +5,9 @@ ruby '2.5.3'
 
 gem 'rake'
 gem 'sequent', '~> 3.1'
+gem 'sinatra'
+gem 'sinatra-contrib'
+gem 'sinatra-flash'
 
 group :development do
   gem 'rubocop'
