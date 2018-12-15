@@ -18,6 +18,13 @@ class TodoProjector < Sequent::Projector
     )
   end
 
+  on TodoRemoved do |event|
+    delete_all_records(
+      TodoRecord,
+      aggregate_id: event.aggregate_id
+    )
+  end
+
   on TodoTitleChanged do |event|
     update_all_records(
       TodoRecord,

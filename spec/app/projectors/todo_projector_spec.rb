@@ -37,6 +37,20 @@ describe TodoProjector do
     end
   end
 
+  context TodoRemoved do
+    let(:todo_removed) do
+      TodoRemoved.new(aggregate_id: aggregate_id, sequence_number: 2)
+    end
+
+    before { todo_projector.handle_message(todo_added) }
+
+    it 'removes the projection' do
+      expect {
+        todo_projector.handle_message(todo_removed)
+      }.to change(TodoRecord, :count).by(-1)
+    end
+  end
+
   context TodoTitleChanged do
     let(:todo_title_changed) do
       TodoTitleChanged.new(aggregate_id: aggregate_id, title: 'ben en kim', sequence_number: 2)

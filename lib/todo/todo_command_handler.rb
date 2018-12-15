@@ -16,4 +16,10 @@ class TodoCommandHandler < Sequent::CommandHandler
       todo.change_title(command.title)
     end
   end
+
+  on RemoveTodo do |command|
+    do_with_aggregate(command, Todo) do |todo|
+      todo.remove
+    end
+  end
 end
