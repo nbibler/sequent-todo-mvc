@@ -1,0 +1,18 @@
+inherit_gem:
+  rubocop-rails_config:
+    - config/rails.yml
+
+Layout/IndentationConsistency:
+  Enabled: true
+  EnforcedStyle: normal
+
+Layout/CaseIndentation:
+  Enabled: true
+  EnforcedStyle: end
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: single_quotes
+
+AllCops:
+  TargetRubyVersion: 2.5

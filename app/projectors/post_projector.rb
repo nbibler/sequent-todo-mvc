@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative '../records/post_record'
 require_relative '../../lib/post/events'
 
@@ -9,14 +11,14 @@ class PostProjector < Sequent::Projector
   end
 
   on PostAuthorChanged do |event|
-    update_all_records(PostRecord, {aggregate_id: event.aggregate_id}, event.attributes.slice(:author))
+    update_all_records(PostRecord, { aggregate_id: event.aggregate_id }, event.attributes.slice(:author))
   end
 
   on PostTitleChanged do |event|
-    update_all_records(PostRecord, {aggregate_id: event.aggregate_id}, event.attributes.slice(:title))
+    update_all_records(PostRecord, { aggregate_id: event.aggregate_id }, event.attributes.slice(:title))
   end
 
   on PostContentChanged do |event|
-    update_all_records(PostRecord, {aggregate_id: event.aggregate_id}, event.attributes.slice(:content))
+    update_all_records(PostRecord, { aggregate_id: event.aggregate_id }, event.attributes.slice(:content))
   end
 end
