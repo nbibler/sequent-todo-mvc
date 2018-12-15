@@ -29,6 +29,54 @@ RSpec.describe TodoCommandHandler do
     )
   end
 
+  it 'changes the title' do
+    given_events(
+      TodoAdded.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 1
+      ),
+      TodoTitleChanged.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 2,
+        title: 'My first Todo'
+      )
+    )
+    when_command(
+      ChangeTodoTitle.new(
+        aggregate_id: aggregate_id,
+        title: 'My second Todo'
+      )
+    )
+    then_events(
+      TodoTitleChanged.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 3,
+        title: 'My second Todo'
+      )
+    )
+  end
+
+  it 'ignores a title change if unchanged' do
+    given_events(
+      TodoAdded.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 1
+      ),
+      TodoTitleChanged.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 2,
+        title: 'My first Todo'
+      )
+    )
+    when_command(
+      ChangeTodoTitle.new(
+        aggregate_id: aggregate_id,
+        title: 'My first Todo'
+      )
+    )
+    then_events()
+  end
+
   it 'completes a todo' do
     completion_time = DateTime.new(2018, 12, 14, 20, 28, 0, '-05:00')
 

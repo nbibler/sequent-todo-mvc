@@ -9,6 +9,11 @@ class Todo < Sequent::AggregateRoot
     apply TodoTitleChanged, title: command.title
   end
 
+  def change_title(title)
+    return if title == @title
+    apply TodoTitleChanged, title: title
+  end
+
   def complete(time)
     fail TodoAlreadyCompleted if @completion_time
     apply TodoCompleted, completion_time: time

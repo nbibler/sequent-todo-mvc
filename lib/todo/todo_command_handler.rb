@@ -10,4 +10,10 @@ class TodoCommandHandler < Sequent::CommandHandler
       todo.complete(command.completion_time)
     end
   end
+
+  on ChangeTodoTitle do |command|
+    do_with_aggregate(command, Todo) do |todo|
+      todo.change_title(command.title)
+    end
+  end
 end
