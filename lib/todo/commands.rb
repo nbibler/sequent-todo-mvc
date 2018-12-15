@@ -13,5 +13,8 @@ end
 class CompleteTodo < Sequent::Command
 end
 
+class IncompleteTodo < Sequent::Command
+end
+
 class RemoveTodo < Sequent::Command
 end

@@ -22,4 +22,10 @@ class TodoCommandHandler < Sequent::CommandHandler
       todo.remove
     end
   end
+
+  on IncompleteTodo do |command|
+    do_with_aggregate(command, Todo) do |todo|
+      todo.incomplete
+    end
+  end
 end

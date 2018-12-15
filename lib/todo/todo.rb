@@ -3,6 +3,7 @@
 class Todo < Sequent::AggregateRoot
   Error = Class.new(StandardError)
   TodoAlreadyCompleted = Class.new(Error)
+  TodoAlreadyIncomplete = Class.new(Error)
   TodoAlreadyRemoved = Class.new(Error)
 
   def initialize(command)
@@ -18,9 +19,15 @@ class Todo < Sequent::AggregateRoot
   end
 
   def complete
-    fail TodoAlreadyCompleted if @completed
     fail TodoAlreadyRemoved if @removed
+    fail TodoAlreadyCompleted if @completed
     apply TodoCompleted
+  end
+
+  def incomplete
+    fail TodoAlreadyRemoved if @removed
+    fail TodoAlreadyIncomplete unless @completed
+    apply TodoIncompleted
   end
 
   def remove
@@ -33,6 +40,10 @@ class Todo < Sequent::AggregateRoot
 
   on TodoCompleted do |event|
     @completed = true
+  end
+
+  on TodoIncompleted do |event|
+    @completed = false
   end
 
   on TodoRemoved do |event|

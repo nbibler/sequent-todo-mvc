@@ -18,17 +18,46 @@ describe TodoProjector do
   end
 
   context TodoCompleted do
-    let(:todo_title_changed) do
+    let(:todo_completed) do
       TodoCompleted.new(aggregate_id: aggregate_id, sequence_number: 2)
     end
 
     before { todo_projector.handle_message(todo_added) }
 
     it 'records the completed flag' do
-      todo_projector.handle_message(todo_title_changed)
       expect(TodoRecord.count).to eq(1)
       record = TodoRecord.first
-      expect(record).to be_completed
+      expect {
+        todo_projector.handle_message(todo_completed)
+      }.to change {
+        record.reload
+        record.completed?
+      }.to(true)
+    end
+  end
+
+  context TodoIncompleted do
+    let(:todo_incompleted) do
+      TodoIncompleted.new(aggregate_id: aggregate_id, sequence_number: 3)
+    end
+
+    before do
+      todo_projector.handle_message(todo_added)
+      todo_projector.handle_message(
+        TodoCompleted.new(aggregate_id: aggregate_id, sequence_number: 2)
+      )
+    end
+
+    it 'records the completed flag' do
+      expect(TodoRecord.count).to eq(1)
+      record = TodoRecord.first
+
+      expect {
+        todo_projector.handle_message(todo_incompleted)
+      }.to change {
+        record.reload
+        record.completed?
+      }.to(false)
     end
   end
 

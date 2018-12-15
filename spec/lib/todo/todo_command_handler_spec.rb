@@ -130,4 +130,37 @@ RSpec.describe TodoCommandHandler do
       then_events()
     end
   end
+
+  context IncompleteTodo do
+    it 'un-completes a todo' do
+      given_events(
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
+        TodoCompleted.new(aggregate_id: aggregate_id, sequence_number: 2)
+      )
+      when_command(IncompleteTodo.new(aggregate_id: aggregate_id))
+      then_events(
+        TodoIncompleted.new(aggregate_id: aggregate_id, sequence_number: 3)
+      )
+    end
+
+    it 'fails when incompleting an incomplete todo' do
+      given_events(
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1)
+      )
+      expect {
+        when_command(IncompleteTodo.new(aggregate_id: aggregate_id))
+      }.to raise_error(Todo::TodoAlreadyIncomplete)
+    end
+
+    it 'fails when incompleting a removed todo' do
+      given_events(
+        TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
+        TodoCompleted.new(aggregate_id: aggregate_id, sequence_number: 2),
+        TodoRemoved.new(aggregate_id: aggregate_id, sequence_number: 3)
+      )
+      expect {
+        when_command(IncompleteTodo.new(aggregate_id: aggregate_id))
+      }.to raise_error(Todo::TodoAlreadyRemoved)
+    end
+  end
 end

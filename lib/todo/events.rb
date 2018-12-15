@@ -6,6 +6,9 @@ end
 class TodoCompleted < Sequent::Event
 end
 
+class TodoIncompleted < Sequent::Event
+end
+
 class TodoRemoved < Sequent::Event
 end
 
