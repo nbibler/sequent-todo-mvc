@@ -10,10 +10,70 @@ RSpec.describe TodoCommandHandler do
   end
 
   it 'creates a todo' do
-    when_command AddTodo.new(aggregate_id: aggregate_id, title: 'My first Todo')
-    then_events(
-      TodoAdded.new(aggregate_id: aggregate_id, sequence_number: 1),
-      TodoTitleChanged.new(aggregate_id: aggregate_id, sequence_number: 2, title: 'My first Todo')
+    when_command(
+      AddTodo.new(
+        aggregate_id: aggregate_id,
+        title: 'My first Todo'
+      )
     )
+    then_events(
+      TodoAdded.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 1
+      ),
+      TodoTitleChanged.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 2,
+        title: 'My first Todo'
+      )
+    )
+  end
+
+  it 'completes a todo' do
+    completion_time = DateTime.new(2018, 12, 14, 20, 28, 0, '-05:00')
+
+    given_events(
+      TodoAdded.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 1
+      )
+    )
+    when_command(
+      CompleteTodo.new(
+        aggregate_id: aggregate_id,
+        completion_time: completion_time
+      )
+    )
+    then_events(
+      TodoCompleted.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 2,
+        completion_time: completion_time
+      )
+    )
+  end
+
+  it 'fails when completing a completed todo' do
+    completion_time = DateTime.new(2018, 12, 14, 20, 28, 0, '-05:00')
+
+    given_events(
+      TodoAdded.new(
+        aggregate_id: aggregate_id,
+        sequence_number: 1
+      ),
+      TodoCompleted.new(
+        aggregate_id: aggregate_id,
+        completion_time: completion_time,
+        sequence_number: 1
+      )
+    )
+    expect {
+      when_command(
+        CompleteTodo.new(
+          aggregate_id: aggregate_id,
+          completion_time: completion_time
+        )
+      )
+    }.to raise_error(Todo::TodoAlreadyCompleted)
   end
 end

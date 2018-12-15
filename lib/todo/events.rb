@@ -3,6 +3,10 @@
 class TodoAdded < Sequent::Event
 end
 
+class TodoCompleted < Sequent::Event
+  attrs completion_time: DateTime
+end
+
 class TodoTitleChanged < Sequent::Event
   attrs title: String
 end
